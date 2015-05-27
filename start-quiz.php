@@ -1,8 +1,17 @@
+<?php
+include 'config.php';
+session_start();
+$qname = $_GET['Name'];
+$_SESSION['qname']=$qname;
+$_SESSION['q_no']=1;
+$j=$_SESSION['q_no'];
+$email = $_SESSION['email'];
+?>
 <!DOCTYPE html>
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <meta name="author" content="Deepankar Agrawal">
+    <meta name="author" content="Varun Bawa">
     <link href="css/materialize.min.css" rel="stylesheet">
     <script src="js/jquery-2.1.1.min.js"></script>
     <script src="js/materialize.min.js"></script>
@@ -34,10 +43,8 @@
     <!--Begin header-->
     <nav>
         <div class="nav-wrapper">
-            <a href="#" class="brand-logo">Quiz Name</a>
-
-
-        </div>
+            <a href="#" class="brand-logo"><?php echo $qname;?></a>
+		</div>
     </nav>
     <!--end Header-->
 
@@ -50,44 +57,51 @@
         </div>
         <!--End of timer-->
 
-        <div class="row register_form">
+<!--Display Starts-->
+		
+<?php
+for($i=$j;$i<=$j;$i++)
+	{
+		$display = mysql_query("Select * from $qname WHERE q_no='".$i."'");
+		$row = mysql_fetch_array($display);
+		$row['q_no']=$i;
+?>		
+<div class="row register_form">
             <div class="col m4 s2 card-panel"></div>
-            <form class="col m4 s8 card-panel teal" action="registeration.html" method="get">
+            <form class="col m4 s8 card-panel teal" action="check_answer.php" method="POST">
                 <div class="row">
-                    <div class="col m10 s10 white-text"><h4>Ques 1</h4></div>
+                    <div class="col m10 s10 white-text"><h4><?php echo $row['q_no'];?></h4></div>
                     <div class="col m1 s1"></div>
                     <div class="col m1 s1"></div>
                 </div>
                 <div class="row white-text">
                     <div class="input-field col m1 s1"></div>
                     <div class="input-field col m10 s10 white-text">
-                        <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin consequat a massa sit amet rhoncus. Phasellus ut nisl nec elit placerat ornare. Donec tincidunt imperdiet purus a congue. Aenean varius varius convallis. Nullam in accumsan nulla. Praesent ut felis ut nunc imperdiet consectetur. Ut placerat tellus eget congue pretium. Nunc sapien eros, aliquam ut sodales quis, tristique ac risus.
-                        </p>
+                        <p><?php echo $row['question'];?></p>
                     </div>
                     <div class="input-field col m1 s1"></div>
                 </div>
                 <div class="row">
                     <div class="col s1 m1"></div>
                     <div class="input-field col m5 s5 white-text center-align">
-                        <input class="with-gap" name="group1" type="radio" id="option1"  />
-                        <label for="option1" class="white-text">Option 1</label>
+                        <input class="with-gap" name="group1" value="<?php echo $row['option1'];?>" type="radio" id="option1"  />
+                        <label for="option1" class="white-text"><?php echo $row['option1'];?></label>
                     </div>
                     <div class="input-field col m5 s5 white-text center-align">
-                        <input class="with-gap" name="group1" type="radio" id="option2"  />
-                        <label for="option2" class="white-text">Option 2</label>
+                        <input class="with-gap" name="group1" value="<?php echo $row['option2'];?>" type="radio" id="option2"  />
+                        <label for="option2" class="white-text"><?php echo $row['option2'];?></label>
                     </div>
                     <div class="col s1 m1"></div>
                 </div>
                 <div class="row">
                     <div class="col s1 m1"></div>
                     <div class="input-field col m5 s5 white-text center-align">
-                        <input class="with-gap" name="group1" type="radio" id="option3"  />
-                        <label for="option3" class="white-text">Option 3</label>
+                        <input class="with-gap" name="group1" value="<?php echo $row['option3'];?>" type="radio" id="option3"  />
+                        <label for="option3" class="white-text"><?php echo $row['option3'];?></label>
                     </div>
                     <div class="input-field col m5 s5 white-text center-align">
-                        <input class="with-gap" name="group1" type="radio" id="option4"  />
-                        <label for="option4" class="white-text">Option 4</label>
+                        <input class="with-gap" name="group1" value="<?php echo $row['option4'];?>" type="radio" id="option4"  />
+                        <label for="option4" class="white-text"><?php echo $row['option4'];?></label>
                     </div>
                     <div class="col s1 m1"></div>
                 </div>
@@ -95,19 +109,19 @@
                     <div class="col s12 m12"></div>
                 </div>
                 <div class="row">
-                    <div class="col m12 s12 center-align"> <button class="btn waves-effect waves-light pink" type="submit">Confirm
-                        <i class="mdi-content-send right"></i>
-                    </button>
+                    <div class="col m12 s12 center-align">
+					<button class="btn waves-effect waves-light pink" type="submit" name="action">Submit
+						<i class="mdi-content-send right"></i>
+					</button>
                     </div>
                 </div>
             </form>
             <div class="col m4 s2 card-panel"></div>
         </div>
-
-
-
-        
-
+<!--Display Ends-->
+<?php
+	}
+?>
     </main>
     <!--End Main Content-->
 
