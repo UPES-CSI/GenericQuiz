@@ -3,6 +3,55 @@ include 'config.php';
 session_start();
 $qname=$_SESSION['qname'];
 ?>
+
+<?php
+if(isset($_POST['fileToUpload']) && !empty($_POST["mail"]))
+{
+	$target_dir = "uploads/";
+	$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+if(isset($target_file))
+$uploadOk = 1;
+$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+// Check if image file is a actual image or fake image
+if(isset($_POST["submit"])) {
+    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+    if($check !== false) {
+        echo "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
+    } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
+    }
+}
+// Check if file already exists
+if (isset($target_file) && file_exists($target_file)) {
+        echo "<script>alert('File Name Already exits. Suggestion:Change filename'); </script>";
+    $uploadOk = 0;
+}
+// Check file size
+if (isset($target_file) && $_FILES["fileToUpload"]["size"] > 2048000) {
+        echo "<script>alert('File Size too large.Make it less then 2MB'); </script>";
+    $uploadOk = 0;
+}
+// Allow certain file formats
+if(isset($target_file) && $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+&& $imageFileType != "gif" && $imageFileType != "JPG" && $imageFileType != "PNG" && $imageFileType != "JPEG"
+&& $imageFileType != "GIF") {
+    $uploadOk = 0;
+}
+// Check if $uploadOk is set to 0 by an error
+if ($uploadOk == 0) {
+        echo "<script>alert('Sorry, your file was not uploaded.'); </script>";
+// if everything is ok, try to upload file
+} else {
+    if (isset($target_file) && move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+        echo "<script>alert('The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.');</script>";
+    } else if (isset($target_file)){
+        echo "<script>alert('Sorry, there was an error uploading your file.');</script>";
+    }
+}
+}
+?>
 <!DOCTYPE html>
 <html>
 <!--image dimensions for card: 200px X 150px-->

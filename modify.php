@@ -1,6 +1,7 @@
 <?php
 include 'config.php';
 session_start();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -57,64 +58,67 @@ session_start();
         </div>
     </nav>
     <!--end Header-->
-	<form class="col s12" method="POST" action="requestcheck.php">
+	<!--Quiz Database Display Block Start-->
+<?php
+$display = mysql_query("Select * from quizzes");
+$result = $display;
+?>
+<table class="striped">
+        <thead>
+          <tr>
+              <th>Quiz No.</th>
+              <th>Quiz Name</th>
+              <th>Organizer</th>
+			  <th>Start Date</th>
+			  <th>Start Time</th>
+			  <th>End Date</th>
+			  <th>End Time</th>
+          </tr>
+        </thead>
+<?php 
+	 while($row = mysql_fetch_array($result)) 
+	 {
+?>
+         <tbody>
+			<tr>
+				<th><?php echo $row["quiz_no"]?></th>
+				<th><?php echo $row["quiz_name"]?></th>
+				<th><?php echo $row["o_name"]?></th>
+				<th><?php echo $row["start_date"]?></th>
+				<th><?php echo $row["start_time"]?></th>
+				<th><?php echo $row["end_date"]?></th>
+				<th><?php echo $row["end_time"]?></th>
+			</tr>
+		</tbody>
+<?php
+     }
+?>
+</table>
+<!--Quiz Database Display Block End-->
+<form class="col s12" method="POST" action="modifycheck.php">
 	<div class="row">
+        <div class="input-field col s1">
+          <input id="q_name" type="text" class="validate" name="qno_old">
+          <label>Quiz No.</label>
+        </div>
         <div class="input-field col s2">
-          <input id="q_name" type="text" class="validate" name="quiz_name">
+		<input id="o_name" type="text" class="validate" name="quiz_name">
           <label>Quiz Name</label>
         </div>
-      </div>
-    <div class="row">
-        <div class="input-field col s2">
-		<input id="o_name" type="text" class="validate" name="o_name">
-          <label>Organizer Name</label>
-        </div>
-      </div>
-	<div class="row">
-        <div class="input-field col s2">
-          <input disabled id="disabled" type="text" class="validate">
-          <label>Start Date & Time</label>
-        </div>
-    </div>
-	<div class="row">
-        <div class="input-field col s3">
-          <input id="date" type="date" class="validate" name="start_date">
-          <label for="date"></label>
-        </div>
-		<div class="input-field col s3">
-          <input id="start" type="time" class="validate" name="start_time">
-          <label for="start"></label>
+        <div class="input-field col s1">
+          <input id="q_name" type="text" class="validate" name="qno_new">
+          <label>New Quiz No.</label>
         </div>
 	</div>
 	<div class="row">
-        <div class="input-field col s2">
-          <input disabled id="disabled" type="text" class="validate">
-          <label>End Date & Time</label>
-        </div>
-    </div>
-	<div class="row">
-        <div class="input-field col s3">
-          <input id="duration" type="date" class="validate" name="end_date">
-          <label for="duration"></label>
-        </div>
-        <div class="input-field col s3">
-          <input id="duration" type="time" class="validate" name="end_time">
-          <label for="duration"></label>
-        </div>
-		 <p>
-			<input class="with-gap" name="group1" type="radio" value="1" id="test1" />
-			<label for="test1">Upload</label>
-		</p> 
-		<p>
-			<input class="with-gap" name="group1" type="radio" value="0" id="test2"/>
-			<label for="test2">Remove</label>
-		</p>
-		<button class="btn waves-effect waves-light" type="submit" name="action">Go
+		<button class="btn waves-effect waves-light" type="submit" name="action">Modify
 			<i class="mdi-content-send right"></i>
 		</button>
-	</div>
 </form>
-	
+	<a href="index.php" class="btn waves-effect waves-light">Done
+			<i class="mdi-content-send right"></i>
+		</a>
+	</div>
 <!--Begin Footer-->
 <footer class="page-footer">
         <div class="container">

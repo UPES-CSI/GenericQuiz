@@ -4,15 +4,87 @@ session_start();
 $qname=$_SESSION['qname'];
 $organizer=$_SESSION['oname'];
 $question=$_POST['question'];
+$answer=$_POST['answer'];
+?>
+<?php
+if(isset($_FILES["fileToUpload"]["name"]))
+{	
+	$target_dir = "uploads/$qname/";
+	$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+if(isset($target_file))
+$uploadOk = 1;
+$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+// Check if image file is a actual image or fake image
+if(isset($_POST["submit"])) {
+    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+    if($check !== false) {
+        echo "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
+    } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
+    }
+}
+// Check if file already exists
+if (isset($target_file) && file_exists($target_file)) {
+        echo "<script>alert('File Name Already exits. Suggestion:Change filename'); </script>";
+    $uploadOk = 0;
+}
+// Check file size
+if (isset($target_file) && $_FILES["fileToUpload"]["size"] > 2048000) {
+        echo "<script>alert('File Size too large.Make it less then 2MB'); </script>";
+    $uploadOk = 0;
+}
+// Allow certain file formats
+if(isset($target_file) && $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+&& $imageFileType != "gif" && $imageFileType != "JPG" && $imageFileType != "PNG" && $imageFileType != "JPEG"
+&& $imageFileType != "GIF") {
+    $uploadOk = 0;
+}
+// Check if $uploadOk is set to 0 by an error
+if ($uploadOk == 0) {
+        echo "<script>alert('Sorry, your file was not uploaded. Suggestion: Change File Name'); </script>";
+// if everything is ok, try to upload file
+} else {
+    if (isset($target_file) && move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+        echo "<script>alert('The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.');</script>";
+    } else if (isset($target_file)){
+        echo "<script>alert('Sorry, there was an error uploading your file.');</script>";
+    }
+}
+}
+?>
+<?php
+if(isset($_POST['option1']) && isset($_POST['option2']) && empty($_FILES["fileToUpload"]["name"]))
+{
 $option1=$_POST['option1'];
 $option2=$_POST['option2'];
 $option3=$_POST['option3'];
 $option4=$_POST['option4'];
-$answer=$_POST['answer'];
 $push = mysql_query("Insert into $qname (question,option1,option2,option3,option4,answer,organizer) values ('$question','$option1','$option2','$option3','$option4','$answer','$organizer')");
+}
+else
+	if(isset($_POST['option1'])&&isset($_POST['option2']) && isset($_FILES["fileToUpload"]["name"]))
+	{
+		$option1=$_POST['option1'];
+		$option2=$_POST['option2'];
+		$option3=$_POST['option3'];
+		$option4=$_POST['option4'];
+		$push = mysql_query("Insert into $qname (question,option1,option2,option3,option4,img_url,answer,organizer) values ('$question','$option1','$option2','$option3','$option4','$target_file','$answer','$organizer')");
+	}
+else
+	if(empty($_POST['option2']) && isset($_FILES["fileToUpload"]["name"]))
+	{
+		$push = mysql_query("Insert into $qname (question,img_url,answer,organizer) values ('$question','$target_file','$answer','$organizer')");
+	}
+else	
+{
+$push = mysql_query("Insert into $qname (question,answer,organizer) values ('$question','$answer','$organizer')");
+}
+
 if (mysql_errno() == 1062) 
 	{	
-		echo "<script>alert('Duplicate Entry for Question Number');</script>";
+		echo "<script>alert('Duplicate Entry for Question Number. Contact Admin');</script>";
 		echo "<script>window.location = 'pushentey.php';</script>";
 	}
 else
@@ -30,9 +102,13 @@ if($push)
     <link href="css/materialize.min.css" rel="stylesheet">
     <script src="js/jquery-2.1.1.min.js"></script>
     <script src="js/materialize.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<link id="page_favicon" href="favicon.ico" rel="icon" type="image/x-icon">
     <title>Enter Quiz Questions</title>
     <style>
+		.hide {
+  display: none;
+}
         .quiz_margin{
             margin: 35px 41px 7px 0px;
         }
@@ -75,7 +151,7 @@ if($push)
         </div>
     </nav>
     <!--end Header-->
-<form class="col s12" method="POST" action="pushentry.php">
+<form class="col s12" method="POST" action="pushentry.php" enctype="multipart/form-data">
 	<div class="row">
         <div class="input-field col s2">
           <input disabled id="disabled" type="text" class="validate">
@@ -87,7 +163,22 @@ if($push)
           <input id="question" type="text" class="validate" name="question">
           <label for="question">Question</label>
         </div>
+	<div class="row">
+	    <div class="input-field col s6">
+          <p>
+      <input type="checkbox" id="chk1" name="image" value="image"/>
+      <label for="chk1">Image</label>
+	  &nbsp&nbsp&nbsp
+      <input type="checkbox" id="chk2" name="mcq" value="mcq"/>
+      <label for="chk2">MCQ</label>
+    </p>
+        </div>	
 	</div>
+	<span class="image-txt hide">	
+	Select image to upload:
+    <input type="file" name="fileToUpload" id="fileToUpload">
+	</span>
+	<span class="mcq-txt hide">
 	<div class="row">
         <div class="input-field col s3">
           <input id="option1" type="text" class="validate" name="option1">
@@ -108,6 +199,7 @@ if($push)
           <label for="option4">Option4</label>
         </div>
 	</div>
+	</span>
 	<div class="row">
         <div class="input-field col s4">
           <input id="answer" type="text" class="validate" name="answer">
@@ -120,10 +212,8 @@ if($push)
 		</button>
 	</div>
 </form>
-    <a href="done.php">
-	<button class="btn waves-effect waves-light" type="submit" name="action">Finished
-    <i class="mdi-content-send right"></i>
-	</button></a>
+    <a href="done.php" class="btn waves-effect waves-light" id="finished">Finished
+    <i class="mdi-content-send right"></i></a>
 <!--Begin Footer-->
 <footer class="page-footer">
         <div class="container">
@@ -151,6 +241,22 @@ if($push)
     <!--end Footer-->
 </body>
 <!--Begin of Script Section-->
+<script>
+$(':checkbox[name=mcq]').on('change', function() {
+    if( $(':checkbox[value=mcq]').is(':checked') ) {
+        $('span.mcq-txt').removeClass( 'hide' );
+    } else {
+        $('span.mcq-txt').addClass( 'hide' );
+    }
+});
+$(':checkbox[name=image]').on('change', function() {
+    if( $(':checkbox[value=image]').is(':checked') ) {
+        $('span.image-txt').removeClass( 'hide' );
+    } else {
+        $('span.image-txt').addClass( 'hide' );
+    }
+});
+</script>
     <script>
 
         //responsive initialization
@@ -166,6 +272,7 @@ if($push)
             // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
             $('.modal-trigger').leanModal();
         });
+		
     </script>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 <!--End of Script Section-->

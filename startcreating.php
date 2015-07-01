@@ -1,22 +1,16 @@
 <?php
+include 'config.php';
 session_start();
 $_SESSION['qname']=$_POST['q_name'];
 $qname=$_POST['q_name'];
 $_SESSION['oname']=$_POST['o_name'];
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "GenericQuiz";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} 
+$result=mysql_query("SELECT * from quizzes") or die("Count Error");
+$count= mysql_num_rows($result);
+$q_no=$count+1;
 
 // sql to create table
-$sql = "CREATE TABLE $qname(
+mkdir("uploads/$qname");
+$sql = mysql_query("CREATE TABLE $qname(
 q_no INT(6) PRIMARY KEY AUTO_INCREMENT, 
 question VARCHAR(250) NOT NULL,
 option1 VARCHAR(50),
@@ -24,14 +18,9 @@ option2 VARCHAR(50),
 option3 VARCHAR(50),
 option4 VARCHAR(50),
 answer VARCHAR(50) NOT NULL,
+img_url VARCHAR(100),
 organizer VARCHAR(50) NOT NULL
-)";
-if ($conn->query($sql) === TRUE) {
-    echo "";
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-$conn->close();
+)") or die("Table Already Exists, Contact Database Admin");
 ?>
 <!DOCTYPE html>
 <html>
@@ -103,6 +92,22 @@ $conn->close();
         </div>
 	</div>
 	<div class="row">
+	    <div class="input-field col s6">
+          <p>
+      <input type="checkbox" id="chk1" name="image" value="image"/>
+      <label for="chk1">Image</label>
+	  &nbsp&nbsp&nbsp
+      <input type="checkbox" id="chk2" name="mcq" value="mcq"/>
+      <label for="chk2">MCQ</label>
+    </p>
+        </div>	
+	</div>
+	<span class="image-txt hide">	
+	Select image to upload:
+    <input type="file" name="fileToUpload" id="fileToUpload">
+	</span>
+	<span class="mcq-txt hide">
+	<div class="row">
         <div class="input-field col s3">
           <input id="option1" type="text" class="validate" name="option1">
           <label for="optionq">Option1</label>
@@ -122,6 +127,7 @@ $conn->close();
           <label for="option4">Option4</label>
         </div>
 	</div>
+	</span>
 	<div class="row">
         <div class="input-field col s4">
           <input id="answer" type="text" class="validate" name="answer">
@@ -161,6 +167,22 @@ $conn->close();
     <!--end Footer-->
 </body>
 <!--Begin of Script Section-->
+<script>
+$(':checkbox[name=mcq]').on('change', function() {
+    if( $(':checkbox[value=mcq]').is(':checked') ) {
+        $('span.mcq-txt').removeClass( 'hide' );
+    } else {
+        $('span.mcq-txt').addClass( 'hide' );
+    }
+});
+$(':checkbox[name=image]').on('change', function() {
+    if( $(':checkbox[value=image]').is(':checked') ) {
+        $('span.image-txt').removeClass( 'hide' );
+    } else {
+        $('span.image-txt').addClass( 'hide' );
+    }
+});
+</script>
     <script>
 
         //responsive initialization

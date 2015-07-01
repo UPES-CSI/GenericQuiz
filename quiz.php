@@ -43,6 +43,17 @@ $email = $_SESSION['email'];
     <nav>
         <div class="nav-wrapper">
             <a href="#" class="brand-logo"><?php echo $qname;?></a>
+		<ul class="right hide-on-med-and-down">
+                <li class="active"><a href="index.php">Home</a></li>
+				<li><a href="logout.php">Logout</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+            <ul class="side-nav" id="mobile-demo">
+                <li class="active"><a href="index.html">Home</a></li>
+				<li><a href="logout.php">Logout</a></li>
+                <li><a href="register.html">Register</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
 		</div>
     </nav>
     <!--end Header-->
@@ -64,46 +75,42 @@ for($i=$j;$i<=$j;$i++)
 		$display = mysql_query("Select * from $qname WHERE q_no='".$i."'");
 		$row = mysql_fetch_array($display);
 		$row['q_no']=$i;
+		$src=$row['img_url'];
 ?>		
 <div class="row register_form">
-            <div class="col m4 s2 card-panel"></div>
-            <form class="col m4 s8 card-panel teal" action="check_answer.php" method="POST">
+            <div class="col m3 s2 card-panel"></div>
+            <form class="col m6 s8 card-panel teal" action="check_answer.php" method="POST">
                 <div class="row">
-                    <div class="col m10 s10 white-text"><h4><?php echo $row['q_no'];?></h4></div>
-                    <div class="col m1 s1"></div>
-                    <div class="col m1 s1"></div>
+                    <div class="col m10 s10 black-text"><h5>Ques.<?php echo $row['q_no'];?></h5></div>
                 </div>
-                <div class="row white-text">
-                    <div class="input-field col m1 s1"></div>
-                    <div class="input-field col m10 s10 white-text">
+				<?php
+				if(isset($src))
+				{
+				?>
+				<img src="<?php echo $src;?>" style="height: 400px; width: 650px;"/>
+                <?php
+				}
+				?>
+				<div class="row white-text">
                         <p><?php echo $row['question'];?></p>
-                    </div>
-                    <div class="input-field col m1 s1"></div>
                 </div>
-                <div class="row">
                     <div class="col s1 m1"></div>
-                    <div class="input-field col m5 s5 white-text center-align">
-                        <input class="with-gap" name="group1" value="<?php echo $row['option1'];?>" type="radio" id="option1"  />
-                        <label for="option1" class="white-text"><?php echo $row['option1'];?></label>
-                    </div>
-                    <div class="input-field col m5 s5 white-text center-align">
-                        <input class="with-gap" name="group1" value="<?php echo $row['option2'];?>" type="radio" id="option2"  />
-                        <label for="option2" class="white-text"><?php echo $row['option2'];?></label>
-                    </div>
-                    <div class="col s1 m1"></div>
-                </div>
-                <div class="row">
-                    <div class="col s1 m1"></div>
-                    <div class="input-field col m5 s5 white-text center-align">
-                        <input class="with-gap" name="group1" value="<?php echo $row['option3'];?>" type="radio" id="option3"  />
-                        <label for="option3" class="white-text"><?php echo $row['option3'];?></label>
-                    </div>
-                    <div class="input-field col m5 s5 white-text center-align">
-                        <input class="with-gap" name="group1" value="<?php echo $row['option4'];?>" type="radio" id="option4"  />
-                        <label for="option4" class="white-text"><?php echo $row['option4'];?></label>
-                    </div>
-                    <div class="col s1 m1"></div>
-                </div>
+				<div class="row">
+						<input type="checkbox" id="test1"  name="check_list[0]" value="<?php echo $row['option1'];?>"/>
+						<label for="test1" class="white-text"><?php echo $row['option1'];?></label>
+				</div>
+				<div class="row">
+						<input type="checkbox" id="test2"  name="check_list[1]" value="<?php echo $row['option2'];?>"/>
+						<label for="test2" class="white-text"><?php echo $row['option2'];?></label>
+  				</div>
+				<div class="row">
+						<input type="checkbox" id="test3"  name="check_list[2]" value="<?php echo $row['option3'];?>"/>
+						<label for="test3" class="white-text"><?php echo $row['option3'];?></label>
+				</div>
+				<div class="row">
+						<input type="checkbox" id="test4"  name="check_list[3]" value="<?php echo $row['option4'];?>"/>
+						<label for="test4" class="white-text"><?php echo $row['option4'];?></label>
+				</div>
                 <div class="row">
                     <div class="col s12 m12"></div>
                 </div>
@@ -115,8 +122,7 @@ for($i=$j;$i<=$j;$i++)
                     </div>
                 </div>
             </form>
-            <div class="col m4 s2 card-panel"></div>
-        </div>
+</div>
 <!--Display Ends-->
 <?php
 	}

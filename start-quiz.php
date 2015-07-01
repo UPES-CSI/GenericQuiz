@@ -1,11 +1,24 @@
 <?php
 include 'config.php';
 session_start();
+if(empty($_SESSION['name']))
+	echo "<script>alert('Please Login To Participate.');window.location.href='index.php';</script>";
 $qname = $_GET['Name'];
+$quizname=$qname.'_score';
 $_SESSION['qname']=$qname;
 $_SESSION['q_no']=1;
 $j=$_SESSION['q_no'];
+$name=$_SESSION['name'];
 $email = $_SESSION['email'];
+$result = mysql_query("SELECT * FROM $quizname WHERE email='$email'");
+$num_rows = mysql_num_rows($result);
+if($num_rows==0)
+{
+if(isset($_SESSION['name']))
+	$entry=mysql_query("INSERT INTO $quizname values('$email','$name',0)") or die(mysql_error());
+}
+else
+	echo "<script>alert('Quiz Already Attempted.');window.location.href='index.php';</script>";
 ?>
 <!DOCTYPE html>
 <html>
@@ -46,6 +59,7 @@ $email = $_SESSION['email'];
             <a href="#" class="brand-logo"><?php echo $qname;?></a>
 		</div>
     </nav>
+	<marquee>Do not REFRESH on this page.</marquee>
     <!--end Header-->
 
 

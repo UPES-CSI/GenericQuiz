@@ -44,7 +44,7 @@ $count = mysql_result($result, 0);
     <!--Begin header-->
     <nav>
         <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">Online Quiz</a>
+            <a href="#!" class="brand-logo">Online Quiz <?php if(isset($_SESSION['name'])){ $abc=$_SESSION['name']; echo "<font size='3pt'> for $abc";}?></a>
             <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
             <ul class="right hide-on-med-and-down">
                 <li class="active"><a href="index.html">Home</a></li>
@@ -124,12 +124,12 @@ $abc++;
 												<span class="card-title grey-text text-darken-4"></span>
 											</div>
 											<div class="col s6 m6">
-                                                <div><a href="timetest.php?Name=<?php echo $table['quiz_name'];?>&sd=<?php echo $table['start_date']?>&st=<?php echo $table['start_time']?>&ed=<?php echo $table['end_date']?>&et=<?php echo $table['end_time']?>"><i class="small mdi-device-access-alarm tooltipped" data-position="top" data-delay="50" data-tooltip="Quiz Timing"></i></a></div>
+                                                <div><a href="timetest.php?Name=<?php echo $table['quiz_name'];?>"><i class="small mdi-device-access-alarm tooltipped" data-position="top" data-delay="50" data-html="true" data-tooltip="<?php echo $table['start_date']; echo $table['start_time'];?><br /><?php echo $table['end_date']; echo $table['end_time'];?>"></i></a></div>
                                             </div>
 											<div class="col s6 m6">
                                                 <div><a href="information.html"><i class="small mdi-action-info-outline tooltipped" data-position="top" data-delay="50" data-tooltip="Information"></i></a></div>
                                             </div>
-                                        </div>
+										</div>
 
                                     </div>
                                 </div>

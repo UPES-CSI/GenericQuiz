@@ -107,7 +107,7 @@ $result = $display;
 		</div>
 	</div>
 	<div class="row">
-		<button class="btn waves-effect waves-light" type="submit" name="action">Needs to be Changed
+		<button class="btn waves-effect waves-light" type="submit" name="action">Needs to be Changed/Added
 			<i></i>
 		</button>
 	</div>

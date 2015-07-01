@@ -41,16 +41,27 @@ $_SESSION['qname']=$qname;
     <nav>
         <div class="nav-wrapper">
             <a href="#" class="brand-logo"><?php echo $qname;?> Leaderboard</a>
-		</div>
+	        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            <ul class="right hide-on-med-and-down">
+                <li class="active"><a href="index.html">Home</a></li>
+    			<li><a href="logout.php">Logout</a></li>
+	            <li><a href="about.html">About</a></li>
+            </ul>
+            <ul class="side-nav" id="mobile-demo">
+                <li class="active"><a href="index.html">Home</a></li>
+            	<li><a href="logout.php">Logout</a></li>
+	            <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
     </nav>
-    <!--end Header-->
+	<!--end Header-->
 
 
     <!--Main Content-->
     <main>
 		<!--Quiz Database Display Block Start-->
 <?php
-$display = mysql_query("Select * from ".$qname."_score ORDER BY score DESC");
+$display = mysql_query("Select * from ".$qname."_score ORDER BY score DESC") or die(mysql_error());
 ?>
 <table class="striped">
         <thead>
